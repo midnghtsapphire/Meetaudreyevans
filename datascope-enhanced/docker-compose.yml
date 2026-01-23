@@ -1,0 +1,275 @@
+# DataScope Enhanced - Docker Compose Configuration
+# Complete multi-service deployment with database, cache, and monitoring
+
+version: '3.8'
+
+services:
+  # Main DataScope Enhanced application
+  datascope:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: datascope-enhanced
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-5000}:5000"
+      - "${METRICS_PORT:-9090}:9090"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://datascope:${POSTGRES_PASSWORD:-datascope123}@postgres:5432/datascope
+      - REDIS_URL=redis://redis:6379/0
+      - CACHE_DIRECTORY=/app/cache
+      - OUTPUT_DIRECTORY=/app/reports
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - HEADLESS_BROWSER=true
+      - API_HOST=0.0.0.0
+      - API_PORT=5000
+    volumes:
+      - ./cache:/app/cache
+      - ./reports:/app/reports
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - datascope-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/v1/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: datascope-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: datascope
+      POSTGRES_USER: datascope
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-datascope123}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - datascope-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U datascope -d datascope"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis cache
+  redis:
+    image: redis:7-alpine
+    container_name: datascope-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+    volumes:
+      - redis_data:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - datascope-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: datascope-nginx
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/nginx/sites-available:/etc/nginx/sites-available:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - datascope
+    networks:
+      - datascope-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: datascope-prometheus
+    restart: unless-stopped
+    ports:
+      - "${PROMETHEUS_PORT:-9091}:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - datascope-network
+    profiles:
+      - monitoring
+
+  # Grafana dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: datascope-grafana
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - datascope-network
+    profiles:
+      - monitoring
+
+  # Log aggregation with ELK stack
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: datascope-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "${ELASTICSEARCH_PORT:-9200}:9200"
+    networks:
+      - datascope-network
+    profiles:
+      - logging
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.10.0
+    container_name: datascope-logstash
+    restart: unless-stopped
+    volumes:
+      - ./config/logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./logs:/usr/share/logstash/logs:ro
+    depends_on:
+      - elasticsearch
+    networks:
+      - datascope-network
+    profiles:
+      - logging
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.0
+    container_name: datascope-kibana
+    restart: unless-stopped
+    ports:
+      - "${KIBANA_PORT:-5601}:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - datascope-network
+    profiles:
+      - logging
+
+  # Scheduler service for automation
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: datascope-scheduler
+    restart: unless-stopped
+    command: ["python", "scripts/scheduler.py"]
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://datascope:${POSTGRES_PASSWORD:-datascope123}@postgres:5432/datascope
+      - REDIS_URL=redis://redis:6379/0
+      - SCHEDULER_MODE=true
+    volumes:
+      - ./cache:/app/cache
+      - ./reports:/app/reports
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      - postgres
+      - redis
+      - datascope
+    networks:
+      - datascope-network
+
+  # Browser automation service (separate for scaling)
+  browser-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: datascope-browser
+    restart: unless-stopped
+    command: ["python", "scripts/browser_service.py"]
+    environment:
+      - ENVIRONMENT=production
+      - REDIS_URL=redis://redis:6379/0
+      - HEADLESS_BROWSER=true
+      - MAX_BROWSER_INSTANCES=3
+    volumes:
+      - ./cache:/app/cache
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+    networks:
+      - datascope-network
+    deploy:
+      replicas: 2
+    profiles:
+      - scaling
+
+# Named volumes for persistent data
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+
+# Custom network
+networks:
+  datascope-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
