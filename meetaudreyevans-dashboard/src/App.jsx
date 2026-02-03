@@ -11,6 +11,7 @@ import {
   Calendar, Eye, TrendingDown, BarChart4, LineChart as LineChartIcon, PieChart as PieChartIcon
 } from 'lucide-react';
 import './App.css';
+import TrueCrime from './TrueCrime';
 
 // ============================================================================
 // DASHBOARD - Main Overview Page
@@ -790,6 +791,7 @@ const App = () => {
               <Route path="/affiliate" element={<AffiliateManagement />} />
               <Route path="/social" element={<SocialMediaManagement />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/truecrime" element={<TrueCrime />} />
             </Routes>
           </AnimatePresence>
         </main>
