@@ -55,7 +55,7 @@
   justify-content: center;
   background: 
     linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)),
-    url('/epstein_fire_background.png') center/cover;
+    url('/epstein_black_cape_pentagram.png') center/cover;
   overflow: hidden;
 }
 
@@ -464,6 +464,8 @@
   text-align: center;
   transition: all 0.3s ease;
   cursor: pointer;
+  text-decoration: none;
+  display: block;
 }
 
 .figure-card:hover {
@@ -548,6 +550,27 @@
   background: rgba(168, 85, 247, 0.2);
   color: #d8b4fe;
   border: 1px solid #a855f7;
+}
+
+.search-link-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.figure-card:hover .search-link-badge {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #000000;
+  transform: scale(1.05);
 }
 
 /* ============================================================================

@@ -15,7 +15,7 @@ const TrueCrime = () => {
     {
       id: 1,
       headline: "SHOCKING: Jeffrey Epstein's Secret Island Files EXPOSED - What They Don't Want You To Know",
-      image: "/epstein_fire_background.png",
+      image: "/epstein_black_cape_pentagram.png",
       category: "BREAKING",
       views: "2.4M",
       timeAgo: "2 hours ago",
@@ -25,7 +25,7 @@ const TrueCrime = () => {
     {
       id: 2,
       headline: "The Epstein Files: 177 Names REVEALED - Celebrities, Politicians, and Billionaires",
-      image: "/circle_of_power.png",
+      image: "/ritual_circle_red_capes.png",
       category: "EXCLUSIVE",
       views: "3.8M",
       timeAgo: "5 hours ago",
@@ -74,16 +74,20 @@ const TrueCrime = () => {
     }
   ];
 
-  // Key figures from Epstein files with case file mentions
+  // Key figures from Epstein files with case file mentions and direct search links
   const keyFigures = [
-    { name: "Jeffrey Epstein", mentions: 2847, status: "deceased", image: "👤" },
-    { name: "Ghislaine Maxwell", mentions: 1923, status: "imprisoned", image: "👤" },
-    { name: "Prince Andrew", mentions: 847, status: "accused", image: "👤" },
-    { name: "Bill Clinton", mentions: 673, status: "mentioned", image: "👤" },
-    { name: "Donald Trump", mentions: 521, status: "mentioned", image: "👤" },
-    { name: "Alan Dershowitz", mentions: 412, status: "accused", image: "👤" },
-    { name: "Les Wexner", mentions: 389, status: "investigated", image: "👤" },
-    { name: "Jean-Luc Brunel", mentions: 356, status: "deceased", image: "👤" },
+    { name: "Jeffrey Epstein", mentions: 2847, status: "deceased", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Jeffrey+Epstein" },
+    { name: "Ghislaine Maxwell", mentions: 1923, status: "imprisoned", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Ghislaine+Maxwell" },
+    { name: "Prince Andrew", mentions: 847, status: "accused", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Prince+Andrew" },
+    { name: "Bill Clinton", mentions: 673, status: "mentioned", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Bill+Clinton" },
+    { name: "Donald Trump", mentions: 521, status: "mentioned", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Donald+Trump" },
+    { name: "Alan Dershowitz", mentions: 412, status: "accused", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Alan+Dershowitz" },
+    { name: "Les Wexner", mentions: 389, status: "investigated", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Les+Wexner" },
+    { name: "Jean-Luc Brunel", mentions: 356, status: "deceased", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Jean-Luc+Brunel" },
+    { name: "Elon Musk", mentions: 127, status: "mentioned", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Elon+Musk" },
+    { name: "Bill Gates", mentions: 243, status: "mentioned", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Bill+Gates" },
+    { name: "Stephen Hawking", mentions: 89, status: "mentioned", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Stephen+Hawking" },
+    { name: "Kevin Spacey", mentions: 156, status: "mentioned", image: "👤", searchUrl: "https://epsteinfilez.com/?s=Kevin+Spacey" },
   ];
 
   // Affiliate products (high-ticket security/investigation tools)
@@ -260,8 +264,11 @@ const TrueCrime = () => {
 
         <div className="figures-grid">
           {keyFigures.map((figure, index) => (
-            <motion.div
+            <motion.a
               key={index}
+              href={figure.searchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`figure-card status-${figure.status}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -279,8 +286,12 @@ const TrueCrime = () => {
                   {figure.status === 'deceased' && '†'}
                   <span>{figure.status.toUpperCase()}</span>
                 </div>
+                <div className="search-link-badge">
+                  <Search size={14} />
+                  <span>VIEW FILES</span>
+                </div>
               </div>
-            </motion.div>
+            </motion.a>
           ))}
         </div>
       </div>
