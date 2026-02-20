@@ -8,7 +8,7 @@ import {
   Users, DollarSign, Target, CheckCircle, Clock, Mic, Drum, Guitar, Piano,
   FileAudio, Volume2, VolumeX, RotateCcw, Save, Sliders, Info, AlertCircle,
   Loader, ExternalLink, Filter, Search, Building, Bug, ChevronDown, ChevronUp,
-  Calendar, Eye, TrendingDown, BarChart4, LineChart as LineChartIcon, PieChart as PieChartIcon
+  Calendar, Eye, TrendingDown, BarChart4, LineChart as LineChartIcon, PieChart as PieChartIcon, Heart as HeartIcon
 } from 'lucide-react';
 import './App.css';
 import TrueCrime from './TrueCrime';
@@ -724,7 +724,8 @@ const Navigation = () => {
     { path: '/security', icon: Shield, label: 'Security', color: '#EF4444' },
     { path: '/affiliate', icon: LinkIcon, label: 'Affiliate', color: '#10B981' },
     { path: '/social', icon: Share2, label: 'Social', color: '#F59E0B' },
-    { path: '/analytics', icon: BarChart3, label: 'Analytics', color: '#3B82F6' }
+    { path: '/analytics', icon: BarChart3, label: 'Analytics', color: '#3B82F6' },
+    { path: 'https://8001-i77tx7anantitr93k1lkk-abad2830.us2.manus.computer', icon: HeartIcon, label: 'Ordain.Church', color: '#EC1C24', external: true }
   ];
 
   return (
@@ -740,26 +741,30 @@ const Navigation = () => {
       </div>
       
       <div className="nav-items">
-        {navItems.map((item) => (
-          <Link key={item.path} to={item.path}>
-            <motion.div 
-              className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
-              whileHover={{ scale: 1.05, x: 10 }}
-              whileTap={{ scale: 0.95 }}
-              style={{ '--nav-color': item.color }}
-            >
-              <item.icon size={24} />
-              <span>{item.label}</span>
-              {location.pathname === item.path && (
-                <motion.div 
-                  className="nav-indicator"
-                  layoutId="nav-indicator"
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-              )}
-            </motion.div>
-          </Link>
-        ))}
+        {navItems.map((item) => {
+          const NavElement = item.external ? 'a' : Link;
+          const navProps = item.external ? { href: item.path, target: '_blank', rel: 'noopener noreferrer' } : { to: item.path };
+          return (
+            <NavElement key={item.path} {...navProps}>
+              <motion.div 
+                className={`nav-item ${!item.external && location.pathname === item.path ? 'active' : ''}`}
+                whileHover={{ scale: 1.05, x: 10 }}
+                whileTap={{ scale: 0.95 }}
+                style={{ '--nav-color': item.color }}
+              >
+                <item.icon size={24} />
+                <span>{item.label}</span>
+                {!item.external && location.pathname === item.path && (
+                  <motion.div 
+                    className="nav-indicator"
+                    layoutId="nav-indicator"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+              </motion.div>
+            </NavElement>
+          );
+        })}
       </div>
       
       <div className="nav-footer">
