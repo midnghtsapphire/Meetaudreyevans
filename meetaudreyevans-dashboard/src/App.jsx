@@ -269,6 +269,35 @@ const Dashboard = () => {
               </motion.button>
             </motion.div>
           </a>
+
+          <a href="https://seishun-wellness.manus.space" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+            <motion.div 
+              className="feature-card anime-ascend-card"
+              whileHover={{ scale: 1.05, y: -5 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              style={{ cursor: 'pointer', borderColor: '#E8729A' }}
+            >
+              <div className="feature-icon">🌸</div>
+              <h3>Anime Ascend</h3>
+              <p>Health monitoring wellness companion with Japanese cherry blossom aesthetics. Heart rate PPG, stress detection, fall detection, and guided exercises with chibi companion Hana.</p>
+              <div className="feature-tags">
+                <span>Health Monitor</span>
+                <span>Heart PPG</span>
+                <span>Fall Detection</span>
+                <span>Companion Mode</span>
+              </div>
+              <motion.button
+                className="action-btn" 
+                style={{ marginTop: '1rem', background: 'linear-gradient(135deg, #E8729A, #d4556b)', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Heart size={18} />
+                Launch Anime Ascend
+                <ExternalLink size={16} />
+              </motion.button>
+            </motion.div>
+          </a>
         </div>
       </div>
 
@@ -756,7 +785,8 @@ const Navigation = () => {
     { path: '/social', icon: Share2, label: 'Social', color: '#F59E0B' },
     { path: '/analytics', icon: BarChart3, label: 'Analytics', color: '#3B82F6' },
     { path: 'https://8001-i77tx7anantitr93k1lkk-abad2830.us2.manus.computer', icon: HeartIcon, label: 'Ordain.Church', color: '#EC1C24', external: true },
-    { path: 'https://revvelpress.manus.space', icon: Newspaper, label: 'RevvelPress', color: '#10B981', external: true }
+    { path: 'https://revvelpress.manus.space', icon: Newspaper, label: 'RevvelPress', color: '#10B981', external: true },
+    { path: 'https://seishun-wellness.manus.space', icon: Heart, label: 'Anime Ascend', color: '#E8729A', external: true }
   ];
 
   return (
