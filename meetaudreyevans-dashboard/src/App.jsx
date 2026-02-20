@@ -8,7 +8,8 @@ import {
   Users, DollarSign, Target, CheckCircle, Clock, Mic, Drum, Guitar, Piano,
   FileAudio, Volume2, VolumeX, RotateCcw, Save, Sliders, Info, AlertCircle,
   Loader, ExternalLink, Filter, Search, Building, Bug, ChevronDown, ChevronUp,
-  Calendar, Eye, TrendingDown, BarChart4, LineChart as LineChartIcon, PieChart as PieChartIcon, Heart as HeartIcon
+  Calendar, Eye, TrendingDown, BarChart4, LineChart as LineChartIcon, PieChart as PieChartIcon, Heart as HeartIcon,
+  FileText, Newspaper
 } from 'lucide-react';
 import './App.css';
 import TrueCrime from './TrueCrime';
@@ -239,6 +240,35 @@ const Dashboard = () => {
               <span>Opportunities</span>
             </div>
           </motion.div>
+
+          <a href="https://revvelpress.manus.space" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+            <motion.div 
+              className="feature-card revvelpress-card"
+              whileHover={{ scale: 1.05, y: -5 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              style={{ cursor: 'pointer', borderColor: '#10b981' }}
+            >
+              <div className="feature-icon">⚡</div>
+              <h3>RevvelPress</h3>
+              <p>AI-powered academic paper editor & viral content generator. Write papers, auto-generate Twitter threads, TikTok scripts, LinkedIn posts & more.</p>
+              <div className="feature-tags">
+                <span>Paper Editor</span>
+                <span>AI Content</span>
+                <span>Zenodo</span>
+                <span>Social Media</span>
+              </div>
+              <motion.button
+                className="action-btn" 
+                style={{ marginTop: '1rem', background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Zap size={18} />
+                Launch RevvelPress
+                <ExternalLink size={16} />
+              </motion.button>
+            </motion.div>
+          </a>
         </div>
       </div>
 
@@ -725,7 +755,8 @@ const Navigation = () => {
     { path: '/affiliate', icon: LinkIcon, label: 'Affiliate', color: '#10B981' },
     { path: '/social', icon: Share2, label: 'Social', color: '#F59E0B' },
     { path: '/analytics', icon: BarChart3, label: 'Analytics', color: '#3B82F6' },
-    { path: 'https://8001-i77tx7anantitr93k1lkk-abad2830.us2.manus.computer', icon: HeartIcon, label: 'Ordain.Church', color: '#EC1C24', external: true }
+    { path: 'https://8001-i77tx7anantitr93k1lkk-abad2830.us2.manus.computer', icon: HeartIcon, label: 'Ordain.Church', color: '#EC1C24', external: true },
+    { path: 'https://revvelpress.manus.space', icon: Newspaper, label: 'RevvelPress', color: '#10B981', external: true }
   ];
 
   return (
