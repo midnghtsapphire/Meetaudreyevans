@@ -241,7 +241,7 @@ const Dashboard = () => {
             </div>
           </motion.div>
 
-          <a href="https://revvelpress.manus.space" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <a href="https://github.com/MIDNGHTSAPPHIRE/RevvelPress" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <motion.div 
               className="feature-card revvelpress-card"
               whileHover={{ scale: 1.05, y: -5 }}
@@ -270,7 +270,7 @@ const Dashboard = () => {
             </motion.div>
           </a>
 
-          <a href="https://seishun-wellness.manus.space" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <a href="https://github.com/MIDNGHTSAPPHIRE/seishun-wellness" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
             <motion.div 
               className="feature-card anime-ascend-card"
               whileHover={{ scale: 1.05, y: -5 }}
@@ -784,9 +784,9 @@ const Navigation = () => {
     { path: '/affiliate', icon: LinkIcon, label: 'Affiliate', color: '#10B981' },
     { path: '/social', icon: Share2, label: 'Social', color: '#F59E0B' },
     { path: '/analytics', icon: BarChart3, label: 'Analytics', color: '#3B82F6' },
-    { path: 'https://8001-i77tx7anantitr93k1lkk-abad2830.us2.manus.computer', icon: HeartIcon, label: 'Ordain.Church', color: '#EC1C24', external: true },
-    { path: 'https://revvelpress.manus.space', icon: Newspaper, label: 'RevvelPress', color: '#10B981', external: true },
-    { path: 'https://seishun-wellness.manus.space', icon: Heart, label: 'Anime Ascend', color: '#E8729A', external: true }
+    { path: 'https://github.com/MIDNGHTSAPPHIRE/ordain-church', icon: HeartIcon, label: 'Ordain.Church', color: '#EC1C24', external: true },
+    { path: 'https://github.com/MIDNGHTSAPPHIRE/RevvelPress', icon: Newspaper, label: 'RevvelPress', color: '#10B981', external: true },
+    { path: 'https://github.com/MIDNGHTSAPPHIRE/seishun-wellness', icon: Heart, label: 'Anime Ascend', color: '#E8729A', external: true }
   ];
 
   return (
